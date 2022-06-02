@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Playlist } from '../interface/Palylist';
 
-interface Playlist {
-  title: string;
-}
-
-const Playlist: React.FC = () => {
+const Playlists: React.FC = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   useEffect(() => {
-    setPlaylists([{ title: '1' }, { title: '2' }, { title: '3' }]);
+    //setPlaylists([{ title: '1', artist: '1', id: 1 }]);
   }, []);
-
-  const addClick = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
 
   const playlistClick = (e: React.FormEvent) => {
     //상세 페이지로 이동
@@ -20,7 +14,7 @@ const Playlist: React.FC = () => {
 
   return (
     <form>
-      <button onClick={addClick}>+ Add playlist</button>
+      <Link to="/add">+ Add playlist</Link>
       <ul>
         {playlists.map((playlist, index) => (
           <li onClick={playlistClick} key={index}>
@@ -32,4 +26,4 @@ const Playlist: React.FC = () => {
   );
 };
 
-export default Playlist;
+export default Playlists;
