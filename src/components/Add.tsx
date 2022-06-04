@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { Playlist } from '../interface/Palylist';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Playlist, PlaylistList } from '../interface/Palylist';
+import { LocalStorage } from '../util/LocalStorage';
 
 const Add: React.FC = () => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const navigation = useNavigate();
   const [palylist, setPalylist] = useState<Playlist[]>([]);
   const [playlistTitle, setPlaylistTitle] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [artist, setArtist] = useState<string>('');
+  const local = LocalStorage.getInstance();
 
   // 노래 추가
   const addButtonClick = (e: React.MouseEvent) => {
@@ -20,18 +25,38 @@ const Add: React.FC = () => {
     setPalylist((prev) => [...prev, newPlaylist]);
     setTitle('');
     setArtist('');
+    titleRef.current!.focus();
   };
 
   // 삭제
   const deleteButtonClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
-    console.log(index);
     setPalylist((prev) => prev.filter((p, idx) => idx !== index));
   };
 
   // 현재 플레이리스트 상태 저장
   const saveButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!playlistTitle) {
+      return alert('플레이리스트의 이름을 입력해주세요');
+    }
+    if (!palylist) {
+      return alert('노래를 추가해주세요');
+    }
+    const newPalylistList: PlaylistList = {
+      title: playlistTitle,
+      palylist: palylist,
+    };
+    if (!local.getLocalStorage('playlist_list')) {
+      local.saveLocalStorage('playlist_list', [newPalylistList]);
+    } else {
+      const prevPlaylist = local.getLocalStorage('playlist_list');
+      local.saveLocalStorage('playlist_list', [
+        ...prevPlaylist,
+        newPalylistList,
+      ]);
+    }
+    navigation('/');
   };
   return (
     <form>
@@ -46,6 +71,7 @@ const Add: React.FC = () => {
         placeholder="노래 제목"
         onChange={(e) => setTitle(e.target.value)}
         value={title}
+        ref={titleRef}
       />
       <input
         type="text"

@@ -1,15 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Playlist } from '../interface/Palylist';
+import { PlaylistList } from '../interface/Palylist';
+import { LocalStorage } from '../util/LocalStorage';
 
 const Playlists: React.FC = () => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistList[]>([]);
+  const local = LocalStorage.getInstance();
+
   useEffect(() => {
-    //setPlaylists([{ title: '1', artist: '1', id: 1 }]);
+    const localStoragePlaylist = local.getLocalStorage('playlist_list');
+    if (!localStoragePlaylist) {
+      return;
+    } else {
+      setPlaylists(localStoragePlaylist);
+    }
   }, []);
 
-  const playlistClick = (e: React.FormEvent) => {
-    //상세 페이지로 이동
+  useEffect(() => {
+    local.saveLocalStorage('playlist_list', playlists);
+  }, [playlists]);
+
+  const deleteButtonClick = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      setPlaylists((prev) => prev.filter((p, idx) => idx !== index));
+      return alert('삭제되었습니다.');
+    } else {
+      return;
+    }
   };
 
   return (
@@ -17,8 +35,9 @@ const Playlists: React.FC = () => {
       <Link to="/add">+ Add playlist</Link>
       <ul>
         {playlists.map((playlist, index) => (
-          <li onClick={playlistClick} key={index}>
-            {playlist.title}
+          <li key={index}>
+            <Link to={`/playlist/${index}`}>{playlist.title}</Link>
+            <button onClick={(e) => deleteButtonClick(index, e)}>삭제</button>
           </li>
         ))}
       </ul>
