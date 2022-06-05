@@ -23,7 +23,7 @@ const Playlists: React.FC = () => {
   const deleteButtonClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      setPlaylists((prev) => prev.filter((p, idx) => idx !== index));
+      setPlaylists((prev) => prev.filter((_, idx) => idx !== index));
       return alert('삭제되었습니다.');
     } else {
       return;
