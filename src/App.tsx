@@ -1,6 +1,4 @@
-import React from 'react';
 import './css/App.css';
-import Search from './components/Search';
 import Playlists from './components/Playlists';
 import { BrowserRouter as Router, Link, Route, Routes } from 'react-router-dom';
 import Add from './components/Add';

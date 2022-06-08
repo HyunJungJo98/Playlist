@@ -21,4 +21,8 @@ export class LocalStorage {
     const parseGetLocalData = JSON.parse(getLocalData);
     return parseGetLocalData;
   }
+
+  removeLocalStorage(key: string) {
+    localStorage.removeItem(key);
+  }
 }

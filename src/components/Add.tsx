@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Playlist, PlaylistList } from '../interface/Palylist';
+import { DragAndDrop } from '../util/DragAndDrop';
 import { LocalStorage } from '../util/LocalStorage';
+import Search from './Search';
 
 const Add: React.FC = () => {
   const { id } = useParams();
@@ -10,8 +12,7 @@ const Add: React.FC = () => {
   const [playlist, setPlaylist] = useState<Playlist[]>([]);
   const [playlistTitle, setPlaylistTitle] = useState<string>('');
   const [title, setTitle] = useState<string>('');
-  const [artist, setArtist] = useState<string>('');
-  const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>();
+  const [artist, setArtist] = useState<string[]>([]);
   const local = LocalStorage.getInstance();
 
   useEffect(() => {
@@ -19,10 +20,6 @@ const Add: React.FC = () => {
       const initialPlaylist: PlaylistList[] =
         local.getLocalStorage('playlist_list');
 
-      local.saveLocalStorage(
-        'playlist_list',
-        initialPlaylist.filter((_, index) => index !== parseInt(id))
-      );
       setPlaylistTitle(initialPlaylist[parseInt(id)].title);
       setPlaylist(initialPlaylist[parseInt(id)].palylist);
     }
@@ -40,7 +37,7 @@ const Add: React.FC = () => {
     };
     setPlaylist((prev) => [...prev, newPlaylist]);
     setTitle('');
-    setArtist('');
+    setArtist([]);
     titleRef.current!.focus();
   };
 
@@ -59,6 +56,12 @@ const Add: React.FC = () => {
     if (playlist.length === 0) {
       return alert('노래를 추가해주세요');
     }
+    const initialPlaylist: PlaylistList[] =
+      local.getLocalStorage('playlist_list');
+    local.saveLocalStorage(
+      'playlist_list',
+      initialPlaylist.filter((_, index) => index !== parseInt(id!))
+    );
     const newPalylistList: PlaylistList = {
       title: playlistTitle,
       palylist: playlist,
@@ -68,51 +71,18 @@ const Add: React.FC = () => {
     } else {
       const prevPlaylist = local.getLocalStorage('playlist_list');
       local.saveLocalStorage('playlist_list', [
-        ...prevPlaylist,
         newPalylistList,
+        ...prevPlaylist,
       ]);
     }
     navigation('/');
   };
 
-  // 드래그 핸들러
-  const dragOverHandler = (e: React.DragEvent<HTMLLIElement>) => {
-    e.preventDefault();
-  };
-
-  const dragStartHandler = (
-    index: number,
-    e: React.DragEvent<HTMLLIElement>
-  ) => {
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', index.toString());
-  };
-
-  const dragEndHandler = (e: React.DragEvent<HTMLLIElement>) => {
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const dropHandler = (e: React.DragEvent<HTMLLIElement>) => {
-    const dragItemIndex = +e.dataTransfer.getData('text/plain');
-    let _playlist = [...playlist];
-    const dragItem = _playlist[dragItemIndex];
-
-    _playlist.splice(dragItemIndex, 1);
-    _playlist.splice(draggedItemIndex!, 0, dragItem);
-
-    setPlaylist(_playlist);
-    setDraggedItemIndex(null);
-  };
-
-  const dragEnterHandler = (
-    index: number,
-    _: React.DragEvent<HTMLLIElement>
-  ) => {
-    setDraggedItemIndex(index);
-  };
+  const dragAndDropHandler = new DragAndDrop<Playlist>(playlist, setPlaylist);
 
   return (
     <form>
+      <Search setPlaylist={setPlaylist} />
       <input
         type="text"
         placeholder="플레이리스트 제목"
@@ -129,7 +99,7 @@ const Add: React.FC = () => {
       <input
         type="text"
         placeholder="가수"
-        onChange={(e) => setArtist(e.target.value)}
+        onChange={(e) => setArtist([e.target.value])}
         value={artist}
       />
       <button onClick={addButtonClick}>+</button>
@@ -141,11 +111,11 @@ const Add: React.FC = () => {
           <li
             draggable
             key={index}
-            onDragOver={dragOverHandler}
-            onDragStart={(e) => dragStartHandler(index, e)}
-            onDragEnd={dragEndHandler}
-            onDrop={dropHandler}
-            onDragEnter={(e) => dragEnterHandler(index, e)}
+            onDragOver={dragAndDropHandler.dragOverHandler}
+            onDragStart={(e) => dragAndDropHandler.dragStartHandler(index, e)}
+            onDragEnd={dragAndDropHandler.dragEndHandler}
+            onDrop={dragAndDropHandler.dropHandler}
+            onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
           >
             {item.title} {item.artist}
             <button onClick={(e) => deleteButtonClick(index, e)}>삭제</button>

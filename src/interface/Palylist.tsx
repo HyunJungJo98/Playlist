@@ -1,6 +1,6 @@
 export interface Playlist {
   title: string;
-  artist: string;
+  artist: string[];
 }
 
 export interface PlaylistList {
