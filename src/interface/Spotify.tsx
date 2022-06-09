@@ -5,17 +5,20 @@ export interface SpotifySearchTrack {
 }
 
 export interface SpotifyTrack {
-  album: {
-    id: string;
-    images: { height: number; width: number; url: string }[];
-    name: string;
-  };
-  artists: {
-    id: string;
-    name: string;
-  }[];
+  album: Album;
+  artists: Artist[];
   id: string;
   name: string;
+}
+
+export interface SpotifySearchAlbumName {
+  albums: {
+    items: Album[];
+  };
+}
+
+export interface SpotifySearchAlbumTrack {
+  items: SpotifyTrack[];
 }
 
 export interface Track {
@@ -28,6 +31,7 @@ export interface Album {
   id: string;
   images: AlbumImages[];
   name: string;
+  artists: Artist[];
 }
 
 export interface AlbumImages {
