@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   SpotifySearchTrack,
   Track,
@@ -9,9 +8,8 @@ import {
 } from '../interface/Spotify';
 import { LocalStorage } from '../util/LocalStorage';
 import { Playlist } from '../interface/Palylist';
-
-const CLIENT_ID = '2543d212fb8146d38d983f6543891b56';
-const CLIENT_SECRET = '7e8183ba686840959829a2f82aefee6c';
+import { api } from '../api/api';
+import { confirm } from '../util/confirm';
 
 interface SearchProps {
   setPlaylist: React.Dispatch<React.SetStateAction<Playlist[]>>;
@@ -27,18 +25,15 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   const [selectedOption, setSeletedOption] = useState<Search>('tracks');
   const local = LocalStorage.getInstance();
 
+  useEffect(() => {
+    if (local.getLocalStorage('token')) {
+      setToken(local.getLocalStorage('token'));
+    }
+  }, []);
+
   const login = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const result = await axios.post(
-      'https://accounts.spotify.com/api/token',
-      'grant_type=client_credentials',
-      {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: 'Basic ' + btoa(CLIENT_ID + ':' + CLIENT_SECRET),
-        },
-      }
-    );
+    const result = await api.getToken();
 
     //401일 때 재발급하기
     console.log(result.status);
@@ -58,17 +53,10 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   // 노래 제목 검색
   const searchTracks = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const data = await axios.get<SpotifySearchTrack>(
-      'https://api.spotify.com/v1/search',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          q: searchKey,
-          type: 'track',
-        },
-      }
+    const data = await api.searchTrack<SpotifySearchTrack>(
+      searchKey,
+      token,
+      'track'
     );
 
     const tracks = data.data.tracks.items;
@@ -89,17 +77,10 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   // 앨범 제목 검색
   const searchAlbum = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const data = await axios.get<SpotifySearchAlbumName>(
-      'https://api.spotify.com/v1/search',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          q: searchKey,
-          type: 'album',
-        },
-      }
+    const data = await api.searchTrack<SpotifySearchAlbumName>(
+      searchKey,
+      token,
+      'album'
     );
 
     const albums = data.data.albums.items;
@@ -135,44 +116,42 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     local.removeLocalStorage('token');
   };
 
-  // 클릭한 앨범의 모든 트랙들 추가
-  const AlbumClick = async (index: number, _: React.MouseEvent) => {
-    if (window.confirm('앨범 전체 트랙을 추가하시겠습니까?')) {
-      const id = albums[index].id;
+  // 클릭한 앨범에 들어있는 트랙 검색
+  const AlbumClick = (index: number, _: React.MouseEvent) => {
+    confirm(
+      () => onConfirm(index),
+      onCancel,
+      '앨범 전체 트랙을 추가하시겠습니까?'
+    );
+  };
 
-      const data = await axios.get<SpotifySearchAlbumTrack>(
-        `https://api.spotify.com/v1/albums/${id}/tracks`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            id: id,
-          },
-        }
-      );
+  const onConfirm = async (index: number) => {
+    const id = albums[index].id;
 
-      const tracks = data.data.items;
+    const data = await api.searchAlbumTrack<SpotifySearchAlbumTrack>(id, token);
 
-      // 앨범 전체 트랙 추가
-      let newTracks: Playlist[] = [];
+    const tracks = data.data.items;
 
-      tracks.map((track) => {
-        let artist: string[] = [];
-        track.artists.map((arti) => artist.push(arti.name));
-        const newPlaylist: Playlist = {
-          title: track.name,
-          artist: artist,
-        };
-        newTracks.push(newPlaylist);
-      });
+    // 앨범 전체 트랙 추가
+    let newTracks: Playlist[] = [];
 
-      console.log(newTracks);
+    tracks.map((track) => {
+      let artist: string[] = [];
+      track.artists.map((arti) => artist.push(arti.name));
+      const newPlaylist: Playlist = {
+        title: track.name,
+        artist: artist,
+      };
+      newTracks.push(newPlaylist);
+    });
 
-      setPlaylist((prev) => prev.concat(newTracks));
-    } else {
-      return;
-    }
+    console.log(newTracks);
+
+    setPlaylist((prev) => prev.concat(newTracks));
+  };
+
+  const onCancel = () => {
+    return;
   };
 
   const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {

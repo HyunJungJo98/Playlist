@@ -11,7 +11,9 @@ const ShowPlaylist: React.FC = () => {
   return (
     <section>
       <h2>{thisPlaylist.title}</h2>
-      <Link to={`/modify/${id}`}>수정</Link>
+      <Link to={`/modify/${id}`} style={{ textDecoration: 'none' }}>
+        수정
+      </Link>
       <ul>
         {thisPlaylist.palylist.map((playlist, index) => (
           <li key={index}>

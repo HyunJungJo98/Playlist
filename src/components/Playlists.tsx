@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PlaylistList } from '../interface/Palylist';
 import { DragAndDrop } from '../util/DragAndDrop';
 import { LocalStorage } from '../util/LocalStorage';
+import { confirm } from '../util/confirm';
+import style from '../css/Playlists.module.css';
 
 const Playlists: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistList[]>([]);
   const local = LocalStorage.getInstance();
+  const navgation = useNavigate();
 
   useEffect(() => {
     const localStoragePlaylist = local.getLocalStorage('playlist_list');
@@ -23,12 +26,17 @@ const Playlists: React.FC = () => {
 
   const deleteButtonClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      setPlaylists((prev) => prev.filter((_, idx) => idx !== index));
-      return alert('삭제되었습니다.');
-    } else {
-      return;
-    }
+
+    confirm(() => onConfirm(index), onCancel, '정말 삭제하시겠습니까?');
+  };
+
+  const onConfirm = (index: number) => {
+    setPlaylists((prev) => prev.filter((_, idx) => idx !== index));
+    return alert('삭제되었습니다.');
+  };
+
+  const onCancel = () => {
+    return;
   };
 
   const dragAndDropHandler = new DragAndDrop<PlaylistList>(
@@ -36,10 +44,18 @@ const Playlists: React.FC = () => {
     setPlaylists
   );
 
+  const titleClick = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+
+    navgation(`/playlist/${index}`);
+  };
+
   return (
-    <form>
-      <Link to="/add">+ Add playlist</Link>
-      <ul>
+    <form className={style.form}>
+      <div className={style.AddButton}>
+        <Link to="/add">+ Add playlist</Link>
+      </div>
+      <ul className={style.playlists}>
         {playlists.map((playlist, index) => (
           <li
             draggable
@@ -49,9 +65,15 @@ const Playlists: React.FC = () => {
             onDragEnd={dragAndDropHandler.dragEndHandler}
             onDrop={dragAndDropHandler.dropHandler}
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
+            className={style.playlist}
           >
-            <Link to={`/playlist/${index}`}>{playlist.title}</Link>
-            <button onClick={(e) => deleteButtonClick(index, e)}>삭제</button>
+            <div onClick={(e) => titleClick(index, e)} className={style.title}>
+              {playlist.title}
+            </div>
+            <button
+              onClick={(e) => deleteButtonClick(index, e)}
+              className={style.deleteButton}
+            ></button>
           </li>
         ))}
       </ul>

@@ -1,16 +1,20 @@
 .App {
   text-align: center;
-}
-
-body {
+  min-width: 800px;
+  padding: 50px;
 }
 
 h1 {
-  margin-top: 100px;
+  margin-bottom: 150px;
   font-size: 100px;
   text-decoration: none;
   font-family: 'title';
   color: white;
+  transition: color 0.3s ease-out;
+}
+
+h1:hover {
+  color: #cbcfe7;
 }
 /* main {
   margin-top: 100px;
@@ -24,8 +28,14 @@ h1 {
   src: url('../font/GravitasOne-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'general';
+  src: url('../font/LeferiPointSpecial.ttf') format('truetype');
+}
+
 body {
-  background: #8d8d8d;
+  background: #242630;
+  font-family: 'general';
 }
 
 #stars {

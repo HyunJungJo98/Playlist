@@ -1,0 +1,74 @@
+.form {
+  text-align: center;
+  width: 800px;
+  margin: 0 auto;
+}
+
+.AddButton {
+  text-align: right;
+}
+
+.AddButton > * {
+  color: white;
+  font-size: 30px;
+  text-decoration: none;
+  transition: color 0.3s ease-out;
+}
+
+.AddButton:hover > * {
+  color: #cbcfe7;
+}
+
+.playlists {
+  padding: 0;
+}
+
+.playlist {
+  display: flex;
+  padding: 0px 30px;
+  box-sizing: border-box;
+  list-style: none;
+  margin: 25px 0px 0px 0px;
+  height: 80px;
+  background-color: white;
+  border-radius: 20px;
+  justify-content: space-between;
+  align-items: center;
+  transition: height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.playlist:hover {
+  height: 120px;
+  background-color: #cbcfe7;
+}
+
+.playlist:hover .title {
+  height: 100px;
+  line-height: 100px;
+}
+
+.title {
+  font-size: 25px;
+  color: #242630;
+  cursor: pointer;
+  width: 650px;
+  height: 60px;
+  line-height: 60px;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.deleteButton {
+  border: none;
+  background: url('../img/dustbin.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: 50% 50%;
+  background-color: transparent;
+  height: 40px;
+  width: 40px;
+  cursor: pointer;
+}
