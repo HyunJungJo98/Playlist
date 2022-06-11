@@ -4,15 +4,19 @@ import { Playlist, PlaylistList } from '../interface/Palylist';
 import { DragAndDrop } from '../util/DragAndDrop';
 import { LocalStorage } from '../util/LocalStorage';
 import Search from './Search';
+import style from '../css/Add.module.css';
 
 const Add: React.FC = () => {
   const { id } = useParams();
   const titleRef = useRef<HTMLInputElement>(null);
+  const playlistTitleRef = useRef<HTMLInputElement>(null);
   const navigation = useNavigate();
   const [playlist, setPlaylist] = useState<Playlist[]>([]);
   const [playlistTitle, setPlaylistTitle] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [artist, setArtist] = useState<string[]>([]);
+  const [file, setFile] = useState<FileList | null>(null);
+  const [formdata, setFormdata] = useState<FormData | null>(null);
   const local = LocalStorage.getInstance();
 
   useEffect(() => {
@@ -65,6 +69,7 @@ const Add: React.FC = () => {
     const newPalylistList: PlaylistList = {
       title: playlistTitle,
       palylist: playlist,
+      image: formdata,
     };
     if (!local.getLocalStorage('playlist_list')) {
       local.saveLocalStorage('playlist_list', [newPalylistList]);
@@ -80,14 +85,48 @@ const Add: React.FC = () => {
 
   const dragAndDropHandler = new DragAndDrop<Playlist>(playlist, setPlaylist);
 
+  const fileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files;
+    setFile(file);
+  };
+
+  const fileDeleteButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setFile(null);
+  };
+
+  useEffect(() => {
+    const className = playlistTitleRef.current!.className;
+    const imgEl = document.querySelector(`.${className}`) as HTMLInputElement;
+
+    if (file) {
+      const formdata_ = new FormData();
+      formdata_.append('image', file[0]);
+      setFormdata(formdata_);
+      const reader = new FileReader();
+      reader.onload = () => {
+        imgEl.style.backgroundImage = `url(${reader.result})`;
+      };
+      reader.readAsDataURL(file[0]);
+    } else {
+      imgEl.style.backgroundImage = `none`;
+      setFormdata(null);
+    }
+  }, [file]);
+
   return (
     <form>
       <Search setPlaylist={setPlaylist} />
+      <input type="file" id="image" onChange={fileUpload} />
+      <label htmlFor="image"></label>
+      <button onClick={fileDeleteButtonClick}>삭제</button>
       <input
         type="text"
         placeholder="플레이리스트 제목"
         onChange={(e) => setPlaylistTitle(e.target.value)}
         value={playlistTitle}
+        className={style.playlistTitle}
+        ref={playlistTitleRef}
       />
       <input
         type="text"

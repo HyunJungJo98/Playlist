@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PlaylistList } from '../interface/Palylist';
 import { DragAndDrop } from '../util/DragAndDrop';
@@ -8,6 +8,7 @@ import style from '../css/Playlists.module.css';
 
 const Playlists: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistList[]>([]);
+  const playlistRef = useRef<HTMLLIElement>(null);
   const local = LocalStorage.getInstance();
   const navgation = useNavigate();
 
@@ -50,6 +51,20 @@ const Playlists: React.FC = () => {
     navgation(`/playlist/${index}`);
   };
 
+  const playlistHover = (
+    file: FormData | null,
+    e: React.MouseEvent<HTMLLIElement>
+  ) => {
+    const className = playlistRef.current!.className;
+    const imgEl = document.querySelector(`.${className}`) as HTMLInputElement;
+    if (file) {
+      console.log(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        console.log(reader.result);
+      };
+    }
+  };
   return (
     <form className={style.form}>
       <div className={style.AddButton}>
@@ -66,6 +81,8 @@ const Playlists: React.FC = () => {
             onDrop={dragAndDropHandler.dropHandler}
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
             className={style.playlist}
+            ref={playlistRef}
+            onMouseOver={(e) => playlistHover(playlist.image, e)}
           >
             <div onClick={(e) => titleClick(index, e)} className={style.title}>
               {playlist.title}

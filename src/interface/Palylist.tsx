@@ -6,4 +6,5 @@ export interface Playlist {
 export interface PlaylistList {
   title: string;
   palylist: Playlist[];
+  image: FormData | null;
 }
