@@ -182,7 +182,7 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
           </div>
         </>
       )}
-      <ul style={{ height: '200px', overflow: 'auto' }}>
+      <ul style={{ height: '10px', overflow: 'auto' }}>
         {selectedOption === 'tracks'
           ? tracks.map((track, index) => (
               <li key={index} onClick={(e) => trackClick(index, e)}>

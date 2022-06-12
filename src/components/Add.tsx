@@ -16,7 +16,7 @@ const Add: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [artist, setArtist] = useState<string[]>([]);
   const [file, setFile] = useState<FileList | null>(null);
-  const [formdata, setFormdata] = useState<FormData | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const local = LocalStorage.getInstance();
 
   useEffect(() => {
@@ -66,11 +66,12 @@ const Add: React.FC = () => {
       'playlist_list',
       initialPlaylist.filter((_, index) => index !== parseInt(id!))
     );
-    const newPalylistList: PlaylistList = {
+    let newPalylistList: PlaylistList = {
       title: playlistTitle,
       palylist: playlist,
-      image: formdata,
+      image: imageUrl,
     };
+
     if (!local.getLocalStorage('playlist_list')) {
       local.saveLocalStorage('playlist_list', [newPalylistList]);
     } else {
@@ -93,6 +94,7 @@ const Add: React.FC = () => {
   const fileDeleteButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setFile(null);
+    setImageUrl(null);
   };
 
   useEffect(() => {
@@ -102,20 +104,19 @@ const Add: React.FC = () => {
     if (file) {
       const formdata_ = new FormData();
       formdata_.append('image', file[0]);
-      setFormdata(formdata_);
       const reader = new FileReader();
       reader.onload = () => {
         imgEl.style.backgroundImage = `url(${reader.result})`;
+        setImageUrl(reader.result!.toString());
       };
       reader.readAsDataURL(file[0]);
     } else {
       imgEl.style.backgroundImage = `none`;
-      setFormdata(null);
     }
   }, [file]);
 
   return (
-    <form>
+    <form className={style.form}>
       <Search setPlaylist={setPlaylist} />
       <input type="file" id="image" onChange={fileUpload} />
       <label htmlFor="image"></label>
@@ -128,23 +129,36 @@ const Add: React.FC = () => {
         className={style.playlistTitle}
         ref={playlistTitleRef}
       />
-      <input
-        type="text"
-        placeholder="노래 제목"
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
-        ref={titleRef}
-      />
-      <input
-        type="text"
-        placeholder="가수"
-        onChange={(e) => setArtist([e.target.value])}
-        value={artist}
-      />
-      <button onClick={addButtonClick}>+</button>
-      <button type="submit" onClick={saveButtonClick}>
-        저장
-      </button>
+      <div className={style.inputArea}>
+        <input
+          type="text"
+          placeholder="노래 제목"
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+          ref={titleRef}
+          className={style.title}
+        />
+
+        <input
+          type="text"
+          placeholder="가수"
+          onChange={(e) => setArtist([e.target.value])}
+          value={artist}
+          className={style.artist}
+        />
+        <button onClick={addButtonClick} className={style.addButton}>
+          +
+        </button>
+      </div>
+      <div>
+        <button
+          type="submit"
+          onClick={saveButtonClick}
+          className={style.saveButton}
+        >
+          저장
+        </button>
+      </div>
       <ul>
         {playlist.map((item, index) => (
           <li

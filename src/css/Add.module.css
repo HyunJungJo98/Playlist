@@ -1,4 +1,68 @@
+.form > * {
+  margin-bottom: 300px;
+  margin: 0 auto;
+}
+
+.form {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.playlistTitle,
+.title,
+.artist {
+  border: none;
+  background-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 0px 30px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease-out;
+}
+
 .playlistTitle {
+  font-size: 25px;
   width: 800px;
   height: 80px;
+  display: flex;
+  border-radius: 20px;
+}
+
+.playlistTitle:focus {
+  outline: none;
+  background-color: white;
+  color: #242630;
+}
+
+.playlistTitle:focus::placeholder {
+  color: #242630;
+}
+
+.playlistTitle::placeholder {
+  color: white;
+}
+
+.inputArea {
+  display: flex;
+  justify-content: space-between;
+}
+
+.title,
+.artist {
+  width: 350px;
+  height: 50px;
+  border-radius: 15px;
+}
+
+.addButton {
+  width: 50px;
+  height: 50px;
+  font-size: 30px;
+}
+
+.saveButton {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  width: 50px;
+  height: 50px;
 }

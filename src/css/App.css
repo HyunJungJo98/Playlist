@@ -5,7 +5,7 @@
 }
 
 h1 {
-  margin-bottom: 150px;
+  margin-bottom: 100px;
   font-size: 100px;
   text-decoration: none;
   font-family: 'title';
@@ -35,6 +35,11 @@ h1:hover {
 
 body {
   background: #242630;
+  font-family: 'general';
+}
+
+body input,
+body button {
   font-family: 'general';
 }
 
