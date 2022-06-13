@@ -159,7 +159,7 @@ const Add: React.FC = () => {
           저장
         </button>
       </div>
-      <ul>
+      <ul className={style.playlists}>
         {playlist.map((item, index) => (
           <li
             draggable
@@ -169,9 +169,13 @@ const Add: React.FC = () => {
             onDragEnd={dragAndDropHandler.dragEndHandler}
             onDrop={dragAndDropHandler.dropHandler}
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
+            className={style.playlist}
           >
             {item.title} {item.artist}
-            <button onClick={(e) => deleteButtonClick(index, e)}>삭제</button>
+            <button
+              onClick={(e) => deleteButtonClick(index, e)}
+              className={style.deleteButton}
+            ></button>
           </li>
         ))}
       </ul>

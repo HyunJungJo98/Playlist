@@ -12,7 +12,18 @@ const ShowPlaylist: React.FC = () => {
 
   return (
     <section className={style.section}>
-      <h2 className={style.playlistTitle}>{thisPlaylist.title}</h2>
+      <div className={style.playlistTitleArea}>
+        <div
+          className={style.titleBackground}
+          style={{
+            backgroundImage: thisPlaylist.image
+              ? `url(${thisPlaylist.image})`
+              : 'white',
+          }}
+        ></div>
+        <h2>{thisPlaylist.title}</h2>
+      </div>
+
       <div className={style.ModifyButton}>
         <Link to={`/modify/${id}`} style={{ textDecoration: 'none' }}>
           수정

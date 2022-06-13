@@ -54,17 +54,17 @@ const Playlists: React.FC = () => {
     file: string | null,
     _: React.MouseEvent<HTMLLIElement>
   ) => {
-    const className = playlistRef.current!.className;
-    const imgEl = document.querySelector(`.${className}`) as HTMLInputElement;
+    const playlistId = playlistRef.current!.id;
+
+    const imgEl = document.querySelector(`#${playlistId}`) as HTMLInputElement;
     if (file) {
       imgEl.style.backgroundImage = `url(${file})`;
-      imgEl.style.opacity = '0.5';
     }
   };
 
   const playlistMouseLeave = (e: React.MouseEvent) => {
-    const className = playlistRef.current!.className;
-    const imgEl = document.querySelector(`.${className}`) as HTMLInputElement;
+    const playlistId = playlistRef.current!.id;
+    const imgEl = document.querySelector(`#${playlistId}`) as HTMLInputElement;
 
     imgEl.style.backgroundImage = `none`;
   };
@@ -87,6 +87,7 @@ const Playlists: React.FC = () => {
             ref={playlistRef}
             onMouseOver={(e) => playlistHover(playlist.image, e)}
             onMouseLeave={playlistMouseLeave}
+            id={`playlist${index.toString()}`}
           >
             <div onClick={(e) => titleClick(index, e)} className={style.title}>
               {playlist.title}
