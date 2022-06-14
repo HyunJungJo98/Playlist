@@ -39,7 +39,9 @@ body {
 }
 
 body input,
-body button {
+body button,
+body select,
+body option {
   font-family: 'general';
 }
 

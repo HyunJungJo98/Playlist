@@ -18,7 +18,7 @@ const ShowPlaylist: React.FC = () => {
           style={{
             backgroundImage: thisPlaylist.image
               ? `url(${thisPlaylist.image})`
-              : 'white',
+              : 'none',
           }}
         ></div>
         <h2>{thisPlaylist.title}</h2>
@@ -33,7 +33,8 @@ const ShowPlaylist: React.FC = () => {
       <ul className={style.playlists}>
         {thisPlaylist.palylist.map((playlist, index) => (
           <li key={index} className={style.playlist}>
-            {playlist.title} - {playlist.artist}
+            <div className={style.title}>{playlist.title} </div>
+            <div className={style.artist}>&nbsp;-&nbsp;{playlist.artist}</div>
           </li>
         ))}
       </ul>

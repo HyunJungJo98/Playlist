@@ -117,18 +117,26 @@ const Add: React.FC = () => {
 
   return (
     <form className={style.form}>
-      <Search setPlaylist={setPlaylist} />
-      <input type="file" id="image" onChange={fileUpload} />
-      <label htmlFor="image"></label>
-      <button onClick={fileDeleteButtonClick}>삭제</button>
-      <input
-        type="text"
-        placeholder="플레이리스트 제목"
-        onChange={(e) => setPlaylistTitle(e.target.value)}
-        value={playlistTitle}
-        className={style.playlistTitle}
-        ref={playlistTitleRef}
-      />
+      <div className={style.playlistTitleArea}>
+        <input
+          type="text"
+          placeholder="플레이리스트 제목"
+          onChange={(e) => setPlaylistTitle(e.target.value)}
+          value={playlistTitle}
+          className={style.playlistTitle}
+          ref={playlistTitleRef}
+        />
+        <div className={style.imageArea}>
+          <label htmlFor="image"></label>
+          <input
+            type="file"
+            id="image"
+            onChange={fileUpload}
+            style={{ display: 'none' }}
+          />
+          <button onClick={fileDeleteButtonClick}>삭제</button>
+        </div>
+      </div>
       <div className={style.inputArea}>
         <input
           type="text"
@@ -136,21 +144,20 @@ const Add: React.FC = () => {
           onChange={(e) => setTitle(e.target.value)}
           value={title}
           ref={titleRef}
-          className={style.title}
+          className={style.addTitle}
         />
-
         <input
           type="text"
           placeholder="가수"
           onChange={(e) => setArtist([e.target.value])}
           value={artist}
-          className={style.artist}
+          className={style.addArtist}
         />
         <button onClick={addButtonClick} className={style.addButton}>
           +
         </button>
       </div>
-      <div>
+      <div className={style.saveButtonArea}>
         <button
           type="submit"
           onClick={saveButtonClick}
@@ -159,6 +166,9 @@ const Add: React.FC = () => {
           저장
         </button>
       </div>
+
+      <Search setPlaylist={setPlaylist} />
+
       <ul className={style.playlists}>
         {playlist.map((item, index) => (
           <li
@@ -171,7 +181,8 @@ const Add: React.FC = () => {
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
             className={style.playlist}
           >
-            {item.title} {item.artist}
+            <div className={style.title}>{item.title}</div>
+            <div className={style.artist}>&nbsp;-&nbsp;{item.artist}</div>
             <button
               onClick={(e) => deleteButtonClick(index, e)}
               className={style.deleteButton}

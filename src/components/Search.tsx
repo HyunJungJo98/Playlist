@@ -10,6 +10,7 @@ import { LocalStorage } from '../util/LocalStorage';
 import { Playlist } from '../interface/Palylist';
 import { api } from '../api/api';
 import { confirm } from '../util/confirm';
+import style from '../css/Search.module.css';
 
 interface SearchProps {
   setPlaylist: React.Dispatch<React.SetStateAction<Playlist[]>>;
@@ -42,61 +43,76 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     local.saveLocalStorage('token', result.data.access_token);
   };
 
-  const searchSpotify = (e: React.MouseEvent) => {
+  const searchSpotify = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchKey(e.target.value);
     if (selectedOption === 'tracks') {
-      searchTracks(e);
+      searchTracks(e.target.value);
     } else {
-      searchAlbum(e);
+      searchAlbum(e.target.value);
+    }
+  };
+
+  // 검색 버튼 눌렀을 때
+  const searchSpotifyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (selectedOption === 'tracks') {
+      searchTracks(searchKey);
+    } else {
+      searchAlbum(searchKey);
     }
   };
 
   // 노래 제목 검색
-  const searchTracks = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const data = await api.searchTrack<SpotifySearchTrack>(
-      searchKey,
-      token,
-      'track'
-    );
+  const searchTracks = async (searchKey: string) => {
+    // e.preventDefault();
+    if (searchKey) {
+      const data = await api.searchTrack<SpotifySearchTrack>(
+        searchKey,
+        token,
+        'track'
+      );
+      const tracks = data.data.tracks.items;
 
-    const tracks = data.data.tracks.items;
+      let newTracks: Track[] = [];
 
-    let newTracks: Track[] = [];
+      tracks.map((track) => {
+        const newTrack: Track = {
+          title: track.name,
+          artists: track.artists,
+          albumImages: track.album.images,
+        };
+        newTracks.push(newTrack);
+      });
 
-    tracks.map((track) => {
-      const newTrack: Track = {
-        title: track.name,
-        artists: track.artists,
-        albumImages: track.album.images,
-      };
-      newTracks.push(newTrack);
-    });
-    setTracks(newTracks);
+      setTracks(newTracks);
+    }
   };
 
   // 앨범 제목 검색
-  const searchAlbum = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const data = await api.searchTrack<SpotifySearchAlbumName>(
-      searchKey,
-      token,
-      'album'
-    );
+  const searchAlbum = async (searchKey: string) => {
+    //e.preventDefault();
 
-    const albums = data.data.albums.items;
+    if (searchKey) {
+      const data = await api.searchTrack<SpotifySearchAlbumName>(
+        searchKey,
+        token,
+        'album'
+      );
+      const albums = data.data.albums.items;
 
-    let newAlbums: Album[] = [];
+      let newAlbums: Album[] = [];
 
-    albums.map((album) => {
-      const newAlbum: Album = {
-        id: album.id,
-        images: album.images,
-        artists: album.artists,
-        name: album.name,
-      };
-      newAlbums.push(newAlbum);
-    });
-    setAlbums(newAlbums);
+      albums.map((album) => {
+        const newAlbum: Album = {
+          id: album.id,
+          images: album.images,
+          artists: album.artists,
+          name: album.name,
+        };
+        newAlbums.push(newAlbum);
+      });
+      setAlbums(newAlbums);
+    }
   };
 
   // 클릭한 트랙 플레이리스트에 추가
@@ -111,6 +127,14 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     setPlaylist((prev) => [...prev, newPlaylist]);
   };
 
+  // 검색 창 닫기
+  const searchCancelButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setTracks([]);
+    setAlbums([]);
+  };
+
+  // 로그아웃
   const logout = () => {
     setToken('');
     local.removeLocalStorage('token');
@@ -154,6 +178,7 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     return;
   };
 
+  // 노래 제목 / 앨범 선택
   const selectHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     if (value === 'tracks' || value === 'album') {
@@ -162,48 +187,82 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   };
 
   return (
-    <div>
+    <section className={style.section}>
       {!token ? (
-        <button onClick={login}>login</button>
+        <section className={style.loginSection}>
+          <span>Spotify에서 노래 찾기</span>
+          <button onClick={login} className={style.loginButton}>
+            login
+          </button>
+        </section>
       ) : (
-        <>
-          <button onClick={logout}>logout</button>
+        <section className={style.searchSection}>
           <select onChange={selectHandler} value={selectedOption}>
             <option value="tracks">노래 제목</option>
             <option value="album">앨범 전체 추가</option>
           </select>
-          <div>
-            <input
-              type="text"
-              onChange={(e) => setSearchKey(e.target.value)}
-              value={searchKey}
-            />
-            <button onClick={searchSpotify}>Search</button>
-          </div>
-        </>
+
+          <input
+            type="text"
+            onChange={searchSpotify}
+            placeholder={selectedOption == 'tracks' ? '노래 검색' : '앨범 검색'}
+          />
+          <button className={style.searchButton} onClick={searchSpotifyClick}>
+            Search
+          </button>
+
+          <button onClick={logout} className={style.logoutButton}>
+            logout
+          </button>
+        </section>
       )}
-      <ul style={{ height: '10px', overflow: 'auto' }}>
+      <div
+        style={{
+          display:
+            tracks.length === 0 && albums.length === 0 ? 'none' : 'block',
+        }}
+        className={style.closeButton}
+      >
+        <button onClick={searchCancelButtonClick}> X </button>
+      </div>
+      <ul
+        className={style.resultList}
+        style={{
+          display:
+            tracks.length === 0 && albums.length === 0 ? 'none' : 'block',
+        }}
+      >
         {selectedOption === 'tracks'
           ? tracks.map((track, index) => (
               <li key={index} onClick={(e) => trackClick(index, e)}>
-                <img src={track.albumImages[2].url}></img>
-                <span>{track.title}</span> -
+                <img
+                  src={track.albumImages[2].url}
+                  className={style.albumImage}
+                ></img>
+                <div className={style.title}>{track.title}</div>
                 {track.artists.map((artist, index) => (
-                  <span key={index}>{artist.name}</span>
+                  <div key={index} className={style.artist}>
+                    &nbsp;-&nbsp;{artist.name}
+                  </div>
                 ))}
               </li>
             ))
           : albums.map((album, index) => (
               <li key={index} onClick={(e) => AlbumClick(index, e)}>
-                <img src={album.images[2].url}></img>
-                <span>{album.name}</span> -
+                <img
+                  src={album.images[2].url}
+                  className={style.albumImage}
+                ></img>
+                <div className={style.title}>{album.name}</div>
                 {album.artists.map((artist, index) => (
-                  <span key={index}>{artist.name}</span>
+                  <div key={index} className={style.artist}>
+                    &nbsp;-&nbsp;{artist.name}
+                  </div>
                 ))}
               </li>
             ))}
       </ul>
-    </div>
+    </section>
   );
 };
 

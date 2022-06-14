@@ -1,0 +1,155 @@
+.searchSection > * {
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+  color: white;
+}
+
+.loginSection span {
+  color: white;
+  font-size: 18px;
+  margin-right: 20px;
+  cursor: default;
+}
+
+.loginButton,
+.logoutButton,
+.searchButton {
+  font-size: 18px;
+  width: 80px;
+  border: none;
+  color: white;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.searchSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchSection select {
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  width: 180px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.searchSection select:focus {
+  outline: none;
+}
+
+.searchSection option {
+  color: #242630;
+}
+
+.searchSection input {
+  width: 400px;
+  border: none;
+  border-radius: 15px;
+  padding: 0px 20px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease-out;
+}
+
+.searchSection input:focus {
+  outline: none;
+  background-color: white;
+  color: #242630;
+}
+
+.searchSection input:focus {
+  outline: none;
+}
+
+.searchSection input:focus::placeholder {
+  color: #242630;
+}
+
+.searchSection input::placeholder {
+  color: white;
+}
+
+.closeButton {
+  background-color: #242630;
+  border: white 1px solid;
+  margin-bottom: 0px;
+  text-align: right;
+  border-radius: 15px 15px 0 0;
+  padding: 0 10px;
+}
+
+.closeButton button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+.resultList {
+  position: relative;
+  overflow: auto;
+  height: 300px;
+  margin-top: 0px;
+  padding: 0;
+  border-radius: 0px 0px 15px 15px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-right: white 1px solid;
+  border-left: white 1px solid;
+  border-bottom: white 1px solid;
+}
+
+.resultList::before {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+}
+
+.resultList::-webkit-scrollbar {
+  width: 25px;
+  background-color: transparent;
+  border-radius: 0 15px 15px 0;
+  padding: 5px;
+}
+
+.resultList::-webkit-scrollbar-thumb {
+  width: 15px;
+  background-color: white;
+  border-radius: 15px;
+  background-clip: padding-box;
+  border: 8px solid transparent;
+}
+
+.resultList li {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.albumImage {
+  margin-right: 10px;
+}
+
+.title,
+.artist {
+  font-size: 18px;
+  max-width: 320px;
+  height: 60px;
+  line-height: 60px;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+  color: white;
+}

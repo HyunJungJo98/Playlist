@@ -8,7 +8,7 @@
   font-size: 25px;
   width: 800px;
   height: 80px;
-  background-color: rgb(155, 155, 155);
+  background-color: white;
   color: #242630;
   display: flex;
   padding: 0px 30px;
@@ -29,13 +29,10 @@
   z-index: 1;
   width: 800px;
   height: 80px;
-  background-color: white;
   color: #242630;
-  display: flex;
   padding: 0px 30px;
   box-sizing: border-box;
   border-radius: 20px;
-  align-items: center;
   opacity: 0.5;
 }
 
@@ -50,7 +47,7 @@
   padding: 0px 30px;
   box-sizing: border-box;
   list-style: none;
-  margin: 15px 0px 0px 0px;
+  margin-bottom: 15px;
   height: 50px;
   background-color: rgba(255, 255, 255, 0.4);
   color: white;
@@ -65,6 +62,20 @@
   color: #242630;
   /* background-color: #242630;
   outline: white 1px solid; */
+}
+
+.title,
+.artist {
+  font-size: 18px;
+  cursor: pointer;
+  max-width: 350px;
+  height: 60px;
+  line-height: 60px;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
 }
 
 .ModifyButton {
