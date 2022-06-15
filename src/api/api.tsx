@@ -30,6 +30,10 @@ async function searchRequest<T>(
       type: type,
     },
   });
+
+  if (data.status === 401) {
+    console.log('error');
+  }
   return data;
 }
 

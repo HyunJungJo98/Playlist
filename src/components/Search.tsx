@@ -11,6 +11,7 @@ import { Playlist } from '../interface/Palylist';
 import { api } from '../api/api';
 import { confirm } from '../util/confirm';
 import style from '../css/Search.module.css';
+import { AxiosError } from 'axios';
 
 interface SearchProps {
   setPlaylist: React.Dispatch<React.SetStateAction<Playlist[]>>;
@@ -37,7 +38,9 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     const result = await api.getToken();
 
     //401일 때 재발급하기
-    console.log(result.status);
+    if (result.status === 401) {
+      local.removeLocalStorage('token');
+    }
 
     setToken(result.data.access_token);
     local.saveLocalStorage('token', result.data.access_token);
@@ -55,9 +58,9 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   // 검색 버튼 눌렀을 때
   const searchSpotifyClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (selectedOption === 'tracks') {
+    if (selectedOption === 'tracks' && searchKey) {
       searchTracks(searchKey);
-    } else {
+    } else if (selectedOption === 'album' && searchKey) {
       searchAlbum(searchKey);
     }
   };
@@ -66,25 +69,35 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
   const searchTracks = async (searchKey: string) => {
     // e.preventDefault();
     if (searchKey) {
-      const data = await api.searchTrack<SpotifySearchTrack>(
-        searchKey,
-        token,
-        'track'
-      );
-      const tracks = data.data.tracks.items;
+      try {
+        const data = await api.searchTrack<SpotifySearchTrack>(
+          searchKey,
+          token,
+          'track'
+        );
 
-      let newTracks: Track[] = [];
+        const tracks = data.data.tracks.items;
 
-      tracks.map((track) => {
-        const newTrack: Track = {
-          title: track.name,
-          artists: track.artists,
-          albumImages: track.album.images,
-        };
-        newTracks.push(newTrack);
-      });
+        let newTracks: Track[] = [];
 
-      setTracks(newTracks);
+        tracks.map((track) => {
+          const newTrack: Track = {
+            title: track.name,
+            artists: track.artists,
+            albumImages: track.album.images,
+          };
+          newTracks.push(newTrack);
+        });
+
+        setTracks(newTracks);
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          if (e.response!.status === 401) {
+            local.removeLocalStorage('token');
+            setToken('');
+          }
+        }
+      }
     }
   };
 
@@ -93,25 +106,34 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
     //e.preventDefault();
 
     if (searchKey) {
-      const data = await api.searchTrack<SpotifySearchAlbumName>(
-        searchKey,
-        token,
-        'album'
-      );
-      const albums = data.data.albums.items;
+      try {
+        const data = await api.searchTrack<SpotifySearchAlbumName>(
+          searchKey,
+          token,
+          'album'
+        );
+        const albums = data.data.albums.items;
 
-      let newAlbums: Album[] = [];
+        let newAlbums: Album[] = [];
 
-      albums.map((album) => {
-        const newAlbum: Album = {
-          id: album.id,
-          images: album.images,
-          artists: album.artists,
-          name: album.name,
-        };
-        newAlbums.push(newAlbum);
-      });
-      setAlbums(newAlbums);
+        albums.map((album) => {
+          const newAlbum: Album = {
+            id: album.id,
+            images: album.images,
+            artists: album.artists,
+            name: album.name,
+          };
+          newAlbums.push(newAlbum);
+        });
+        setAlbums(newAlbums);
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          if (e.response!.status === 401) {
+            local.removeLocalStorage('token');
+            setToken('');
+          }
+        }
+      }
     }
   };
 
@@ -219,7 +241,9 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
       <div
         style={{
           display:
-            tracks.length === 0 && albums.length === 0 ? 'none' : 'block',
+            (tracks.length === 0 && albums.length === 0) || !token
+              ? 'none'
+              : 'block',
         }}
         className={style.closeButton}
       >
@@ -229,7 +253,9 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
         className={style.resultList}
         style={{
           display:
-            tracks.length === 0 && albums.length === 0 ? 'none' : 'block',
+            (tracks.length === 0 && albums.length === 0) || !token
+              ? 'none'
+              : 'block',
         }}
       >
         {selectedOption === 'tracks'
