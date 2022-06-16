@@ -47,12 +47,26 @@
   transition: background-color 0.3s ease-out;
 }
 
+.titleBackground {
+  position: relative;
+  width: 800px;
+  height: 100px;
+  z-index: 20;
+  background-color: white;
+  font-size: 25px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
 .playlistTitle {
+  position: absolute;
   font-size: 25px;
   width: 800px;
-  height: 80px;
+  height: 100px;
   display: flex;
   border-radius: 20px;
+  color: #242630;
+  top: 0;
 }
 
 .playlistTitle:focus,

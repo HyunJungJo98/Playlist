@@ -9,13 +9,14 @@ import style from '../css/Add.module.css';
 const Add: React.FC = () => {
   const { id } = useParams();
   const titleRef = useRef<HTMLInputElement>(null);
-  const playlistTitleRef = useRef<HTMLInputElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
   const navigation = useNavigate();
   const [playlist, setPlaylist] = useState<Playlist[]>([]);
   const [playlistTitle, setPlaylistTitle] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [artist, setArtist] = useState<string[]>([]);
   const [file, setFile] = useState<FileList | null>(null);
+  const [initialImageUrl, setInitialImageUrl] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const local = LocalStorage.getInstance();
 
@@ -23,6 +24,12 @@ const Add: React.FC = () => {
     if (id) {
       const initialPlaylist: PlaylistList[] =
         local.getLocalStorage('playlist_list');
+
+      const initialImageUrl = initialPlaylist[parseInt(id)].image;
+
+      if (initialImageUrl) {
+        setInitialImageUrl(initialImageUrl);
+      }
 
       setPlaylistTitle(initialPlaylist[parseInt(id)].title);
       setPlaylist(initialPlaylist[parseInt(id)].palylist);
@@ -91,15 +98,18 @@ const Add: React.FC = () => {
     setFile(file);
   };
 
+  // 이미지 삭제 버튼
   const fileDeleteButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setFile(null);
     setImageUrl(null);
+    setInitialImageUrl(null);
   };
 
+  // 파일 선택했을 때
   useEffect(() => {
-    const className = playlistTitleRef.current!.className;
-    const imgEl = document.querySelector(`.${className}`) as HTMLInputElement;
+    const backgroundId = backgroundRef.current!.id;
+    const imgEl = document.querySelector(`#${backgroundId}`) as HTMLDivElement;
 
     if (file) {
       const formdata_ = new FormData();
@@ -112,20 +122,39 @@ const Add: React.FC = () => {
       reader.readAsDataURL(file[0]);
     } else {
       imgEl.style.backgroundImage = `none`;
+      setImageUrl(null);
     }
   }, [file]);
+
+  useEffect(() => {
+    const backgroundId = backgroundRef.current!.id;
+    const imgEl = document.querySelector(`#${backgroundId}`) as HTMLDivElement;
+
+    if (initialImageUrl) {
+      imgEl.style.backgroundImage = `url(${initialImageUrl})`;
+      setImageUrl(initialImageUrl);
+    } else {
+      imgEl.style.backgroundImage = `none`;
+    }
+  }, [initialImageUrl]);
 
   return (
     <form className={style.form}>
       <div className={style.playlistTitleArea}>
-        <input
-          type="text"
-          placeholder="플레이리스트 제목"
-          onChange={(e) => setPlaylistTitle(e.target.value)}
-          value={playlistTitle}
-          className={style.playlistTitle}
-          ref={playlistTitleRef}
-        />
+        <div
+          className={style.titleBackground}
+          ref={backgroundRef}
+          id="background"
+        >
+          <input
+            type="text"
+            placeholder="플레이리스트 제목"
+            onChange={(e) => setPlaylistTitle(e.target.value)}
+            value={playlistTitle}
+            className={style.playlistTitle}
+          />
+        </div>
+
         <div className={style.imageArea}>
           <label htmlFor="image"></label>
           <input

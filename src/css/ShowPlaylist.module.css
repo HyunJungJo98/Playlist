@@ -7,7 +7,7 @@
   z-index: 0;
   font-size: 25px;
   width: 800px;
-  height: 80px;
+  height: 100px;
   background-color: white;
   color: #242630;
   display: flex;
@@ -28,7 +28,7 @@
   left: 0;
   z-index: 1;
   width: 800px;
-  height: 80px;
+  height: 100px;
   color: #242630;
   padding: 0px 30px;
   box-sizing: border-box;
@@ -82,6 +82,7 @@
   width: 800px;
   text-align: right;
   padding: 15px;
+  box-sizing: border-box;
 }
 
 .ModifyButton > * {
