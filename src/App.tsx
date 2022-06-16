@@ -10,7 +10,7 @@ function App() {
       <div id="stars"></div>
       <div id="stars2"></div>
       <div id="stars3"></div>
-      <Router>
+      <Router basename={process.env.PUBLIC_URL}>
         <Link to={`/`} style={{ textDecoration: 'none' }}>
           <h1>playlist</h1>
         </Link>
