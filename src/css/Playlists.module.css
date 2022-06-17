@@ -3,6 +3,16 @@
   margin: 0 auto;
 }
 
+.topSection {
+  display: flex;
+  color: white;
+  font-size: 18px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
 .AddButton {
   text-align: right;
 }

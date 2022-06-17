@@ -191,8 +191,6 @@ const Search: React.FC<SearchProps> = ({ setPlaylist }) => {
       newTracks.push(newPlaylist);
     });
 
-    console.log(newTracks);
-
     setPlaylist((prev) => prev.concat(newTracks));
   };
 

@@ -95,7 +95,10 @@ const Add: React.FC = () => {
 
   const fileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
-    setFile(file);
+
+    if (file!.length > 0) {
+      setFile(file);
+    }
   };
 
   // 이미지 삭제 버튼
@@ -198,6 +201,9 @@ const Add: React.FC = () => {
 
       <Search setPlaylist={setPlaylist} />
 
+      <div className={style.dragDescription}>
+        * 드래그하여 순서를 이동시킬 수 있어요!
+      </div>
       <ul className={style.playlists}>
         {playlist.map((item, index) => (
           <li

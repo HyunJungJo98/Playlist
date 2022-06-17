@@ -8,7 +8,6 @@ import style from '../css/Playlists.module.css';
 
 const Playlists: React.FC = () => {
   const [playlists, setPlaylists] = useState<PlaylistList[]>([]);
-  const playlistRef = useRef<HTMLLIElement>(null);
   const local = LocalStorage.getInstance();
   const navgation = useNavigate();
 
@@ -52,27 +51,46 @@ const Playlists: React.FC = () => {
 
   const playlistHover = (
     file: string | null,
-    _: React.MouseEvent<HTMLLIElement>
+    e: React.MouseEvent<HTMLElement>
   ) => {
-    const playlistId = playlistRef.current!.id;
+    let playlistId;
+    if (e.target instanceof HTMLElement) {
+      playlistId = e.target.id;
+    }
 
-    const imgEl = document.querySelector(`#${playlistId}`) as HTMLInputElement;
-    if (file) {
-      imgEl.style.backgroundImage = `url(${file})`;
+    if (playlistId) {
+      const imgEl = document.querySelector(
+        `#${playlistId}`
+      ) as HTMLInputElement;
+      if (file) {
+        imgEl.style.backgroundImage = `url(${file})`;
+      }
     }
   };
 
-  const playlistMouseLeave = (e: React.MouseEvent) => {
-    const playlistId = playlistRef.current!.id;
-    const imgEl = document.querySelector(`#${playlistId}`) as HTMLInputElement;
+  const playlistMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
+    let playlistId;
+    if (e.target instanceof HTMLElement) {
+      playlistId = e.target.id;
+    }
+    if (playlistId) {
+      const imgEl = document.querySelector(
+        `#${playlistId}`
+      ) as HTMLInputElement;
 
-    imgEl.style.backgroundImage = `none`;
+      imgEl.style.backgroundImage = `none`;
+    }
   };
+
   return (
     <form className={style.form}>
-      <div className={style.AddButton}>
-        <Link to="/add">+ Add playlist</Link>
-      </div>
+      <section className={style.topSection}>
+        <div>* 드래그하여 순서를 이동시킬 수 있어요!</div>
+        <div className={style.AddButton}>
+          <Link to="/add">+ Add playlist</Link>
+        </div>
+      </section>
+
       <ul className={style.playlists}>
         {playlists.map((playlist, index) => (
           <li
@@ -84,10 +102,9 @@ const Playlists: React.FC = () => {
             onDrop={dragAndDropHandler.dropHandler}
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
             className={style.playlist}
-            ref={playlistRef}
             onMouseOver={(e) => playlistHover(playlist.image, e)}
             onMouseLeave={playlistMouseLeave}
-            id={`playlist${index.toString()}`}
+            id={`playlist` + index.toString()}
           >
             <div onClick={(e) => titleClick(index, e)} className={style.title}>
               {playlist.title}
