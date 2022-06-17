@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/Playlist/static/css/main.0fe8e098.css",
-    "main.js": "/Playlist/static/js/main.624e74d0.js",
+    "main.css": "/Playlist/static/css/main.c529ea39.css",
+    "main.js": "/Playlist/static/js/main.81bd4254.js",
     "static/media/LeferiPointSpecial.ttf": "/Playlist/static/media/LeferiPointSpecial.d7cc59b159245edf0bf1.ttf",
     "static/media/GravitasOne-Regular.ttf": "/Playlist/static/media/GravitasOne-Regular.7f2a405a3aa34ea1d27f.ttf",
     "static/media/dustbin.png": "/Playlist/static/media/dustbin.102ea3bf45b7694d6505.png",
     "index.html": "/Playlist/index.html",
-    "main.0fe8e098.css.map": "/Playlist/static/css/main.0fe8e098.css.map",
-    "main.624e74d0.js.map": "/Playlist/static/js/main.624e74d0.js.map"
+    "main.c529ea39.css.map": "/Playlist/static/css/main.c529ea39.css.map",
+    "main.81bd4254.js.map": "/Playlist/static/js/main.81bd4254.js.map"
   },
   "entrypoints": [
-    "static/css/main.0fe8e098.css",
-    "static/js/main.624e74d0.js"
+    "static/css/main.c529ea39.css",
+    "static/js/main.81bd4254.js"
   ]
 }
