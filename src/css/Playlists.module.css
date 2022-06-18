@@ -44,6 +44,9 @@
   justify-content: space-between;
   align-items: center;
   transition: height 0.3s ease-out, background-color 0.3s ease-out;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
 }
 
 .playlist:hover {

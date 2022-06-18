@@ -55,6 +55,9 @@
   font-size: 25px;
   border-radius: 20px;
   margin-bottom: 20px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
 }
 
 .playlistTitle {
