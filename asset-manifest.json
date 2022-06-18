@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/Playlist/static/css/main.d4778669.css",
-    "main.js": "/Playlist/static/js/main.81bd4254.js",
+    "main.js": "/Playlist/static/js/main.a6d1faf9.js",
     "static/media/LeferiPointSpecial.ttf": "/Playlist/static/media/LeferiPointSpecial.d7cc59b159245edf0bf1.ttf",
     "static/media/GravitasOne-Regular.ttf": "/Playlist/static/media/GravitasOne-Regular.7f2a405a3aa34ea1d27f.ttf",
     "static/media/dustbin.png": "/Playlist/static/media/dustbin.102ea3bf45b7694d6505.png",
     "index.html": "/Playlist/index.html",
     "main.d4778669.css.map": "/Playlist/static/css/main.d4778669.css.map",
-    "main.81bd4254.js.map": "/Playlist/static/js/main.81bd4254.js.map"
+    "main.a6d1faf9.js.map": "/Playlist/static/js/main.a6d1faf9.js.map"
   },
   "entrypoints": [
     "static/css/main.d4778669.css",
-    "static/js/main.81bd4254.js"
+    "static/js/main.a6d1faf9.js"
   ]
 }
