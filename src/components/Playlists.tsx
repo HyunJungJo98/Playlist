@@ -59,9 +59,7 @@ const Playlists: React.FC = () => {
     }
 
     if (playlistId) {
-      const imgEl = document.querySelector(
-        `#${playlistId}`
-      ) as HTMLInputElement;
+      const imgEl = document.querySelector(`#${playlistId}`) as HTMLElement;
       if (file) {
         imgEl.style.backgroundImage = `url(${file})`;
       }
@@ -74,9 +72,7 @@ const Playlists: React.FC = () => {
       playlistId = e.target.id;
     }
     if (playlistId) {
-      const imgEl = document.querySelector(
-        `#${playlistId}`
-      ) as HTMLInputElement;
+      const imgEl = document.querySelector(`#${playlistId}`) as HTMLElement;
 
       imgEl.style.backgroundImage = `none`;
     }
@@ -102,7 +98,7 @@ const Playlists: React.FC = () => {
             onDrop={dragAndDropHandler.dropHandler}
             onDragEnter={(e) => dragAndDropHandler.dragEnterHandler(index, e)}
             className={style.playlist}
-            onMouseOver={(e) => playlistHover(playlist.image, e)}
+            onMouseEnter={(e) => playlistHover(playlist.image, e)}
             onMouseLeave={playlistMouseLeave}
             id={`playlist` + index.toString()}
           >

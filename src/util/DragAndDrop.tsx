@@ -26,11 +26,18 @@ export class DragAndDrop<T> implements DragDropInterface {
   dropHandler = (e: React.DragEvent<HTMLLIElement>) => {
     const dragItemIndex = +e.dataTransfer.getData('text/plain');
     let _playlist = [...this.playlist];
+    // 현재 드래그 하고 있는 아이템
     const dragItem = _playlist[dragItemIndex];
     _playlist.splice(dragItemIndex, 1);
     _playlist.splice(this.draggedItemIndex!, 0, dragItem);
 
     this.setPlaylist(_playlist);
+
+    const imgEl = document.querySelector(
+      `#playlist${dragItemIndex}`
+    ) as HTMLElement;
+    imgEl.style.backgroundImage = `none`;
+
     this.draggedItemIndex = null;
   };
 
